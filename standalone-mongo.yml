@@ -1,0 +1,14 @@
+version: '2'
+services:
+    mongo:
+        container_name: mongo
+        ## Use image from mongo docker library
+        image: mongo
+        expose:
+            - 27017
+        ## Open ports
+        ports:
+            # Default mongo port
+            - "27017:27017"
+        volumes:
+            - "${MONGO_BACKUP_DIR}:/data/db"

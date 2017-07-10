@@ -1,0 +1,39 @@
+version: '2'
+services:
+  mongo:
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - "27017:27017"
+    volumes:
+      - "${MONGO_BACKUP_DIR}:/data/db"
+
+  elasticsearch:
+    image: "danielguerra/elasticsearch-x-pack"
+    links:
+      - "mongo"
+    expose:
+      - 9200
+      - 9300
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  mongoToEsTransporter:
+    image: tombenke/mongo-to-es-transporter:latest
+    environment:
+      DB_NAME: "${DB_NAME}"
+      MONGODB_URI: "${MONGODB_URI}"
+      ELASTICSEARCH_URI: "${ELASTICSEARCH_URI}"
+    links:
+      - "mongo"
+      - "elasticsearch"
+
+  kibana:
+    image: "danielguerra/kibana-x-pack"
+    links:
+      - "elasticsearch"
+    ports:
+      - "5601:5601"
+
